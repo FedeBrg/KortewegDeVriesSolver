@@ -14,9 +14,12 @@ delta_k = 2*pi/(N*delta_x);
 
 k = [0:delta_k:(N/2-1)*delta_k,0,-(N/2-1)*delta_k:delta_k:-delta_k];
 c_1 = 13;
-c_2 = 4;
 
-sol = @(x,t) (1/2*c_1*(sech(sqrt(c_1)*(mod(x-2-c_1*t,xmax-xmin
+u = 1/2*c_1*(sech(sqrt(c_1)*(x)/2)).^2;
+
+sol = @(x,t) (1/2*c_1*(sech(sqrt(c_1)*(mod(x-2-c_1*t,20)-10)/2)).^2);
+
+
 name = 'two_soliton.gif';
 eval(['delete ',name])
 
@@ -38,8 +41,6 @@ for i = 1:1:orderKDV
     Us{i} = fft(u);
 end
 
-syms xr;
-ur=1/2*c_1*(sech(sqrt(c_1)*(xr+8)/2)).^2 + 1/2*c_2*(sech(sqrt(c_2)*(xr+1)/2)).^2;
 % spmd(1)
 time = 1;
 for n = 1:nmax
@@ -60,27 +61,19 @@ for n = 1:nmax
     if mod(n,nplt) == 0
         u = real(ifft(U));
         for i =1:256
-            xr = x(i);
-            u2(i) = subs(ur);
+            u2(i) = sol(delta_x*i,t);
         end
-        disp(u2);
         udata = [udata u.']; tdata = [tdata t];
         if mod(n,4*nplt) == 0
             
-            subplot(1,2,1)
-            t2(time) = t;
-            error(time) = mean(abs(u2 - u));
-            plot(x,u,'LineWidth',2)
+%             plot(x,u,'LineWidth',2)
+            plot(x,u,x,u2,'LineWidth',2)
             axis([-10 10 0 10])
             xlabel('x')
             ylabel('u')
-            text(6,9,['t = ',num2str(t,'%1.2f')],'FontSize',10)
-            subplot(1,2,2)
-            plot(t2,error);
-            xlabel('time[s]')
-            ylabel('Mean square Error')
-            time = time + 1;
+            text(6,9,['t = ',num2str(t,'%1.2f')],'FontSize',18)
             drawnow
+            gif_add_frame(gcf,name,2);
             
             
         end

@@ -17,7 +17,7 @@ c_1 = 13;
 
 u = 1/2*c_1*(sech(sqrt(c_1)*(x+3)/2)).^2;
 
-sol = @(x,t) (1/2*c_1*(sech(sqrt(c_1)*(mod(x-2-c_1*t,20)-10)/2)).^2);
+sol = @(x,t) (1/2*c_1*(sech(sqrt(c_1)*(x-c_1*t+3)/2)).^2);
 
 
 name = 'two_soliton.gif';
@@ -41,7 +41,6 @@ for i = 1:1:orderKDV
     Us{i} = fft(u);
 end
 
-syms xr;
 % spmd(1)
 time = 1;
 for n = 1:nmax
