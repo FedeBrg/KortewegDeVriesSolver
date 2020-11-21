@@ -1,4 +1,4 @@
-function kdv_precision(orderKDV)
+function kdv_yoshida()
 % parpool('local',1);
     tic
 
@@ -19,6 +19,8 @@ u = 1/2*c_1*(sech(sqrt(c_1)*(mod(x+3,20)-10)/2)).^2;
 
 sol = @(x,t) (1/2*c_1*(sech(sqrt(c_1)*(mod(x+3-c_1*(t), 20)-10)/2)).^2);
 
+w1 = 1/(2-2^(1/3));
+w0 = 1-2*w1;
 
 name = 'two_soliton.gif';
 eval(['delete ',name])
@@ -37,26 +39,20 @@ t=0;
 tmax = 1; nplt = floor((tmax/100)/delta_t); nmax = round(tmax/delta_t);
 udata = u.'; tdata = 0;
 
-for i = 1:1:orderKDV
-    Us{i} = fft(u);
-end
+U=fft(u);
 
 % spmd(1)
 time = 1;
 for n = 1:nmax
     t = n*delta_t;
     
-    for i = 1:orderKDV
-        Us{i} = calculateU(i, delta_t, k, Us{i});
-        
-    end
-    
-    gamma = 2*getGamma(orderKDV);
-    U = 0;
-    for i = 1:orderKDV
-        U = U + gamma(i)*Us{i};
-    end
-
+    U = U.*exp(1i*k.^3*delta_t*w1/2);
+    U = U  - (3i*k*delta_t*w1).*fft((real(ifft(U))).^2);
+    U = U.*exp(1i*k.^3*delta_t*(w1+w0)/2);
+    U = U  - (3i*k*delta_t*w0).*fft((real(ifft(U))).^2);
+    U = U.*exp(1i*k.^3*delta_t*(w1+w0)/2);
+    U = U  - (3i*k*delta_t*w1).*fft((real(ifft(U))).^2);
+    U = U.*exp(1i*k.^3*delta_t*w1/2);
     
     
     if mod(n,nplt) == 0
@@ -70,7 +66,7 @@ for n = 1:nmax
            
 %             plot(x,u,'LineWidth',2)
             plot(x,u,x,u2,'LineWidth',1)
-            legend('Solucion kvd', 'Solucion Analitica', 'Location', 'southoutside');
+            legend('Solucion Yoshida', 'Solucion Analitica', 'Location', 'southoutside');
             axis([-10 10 0 10])
             xlabel('x')
             ylabel('u')

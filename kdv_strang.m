@@ -1,4 +1,4 @@
-function kdv_strang(orderKDV)
+function kdv_strang()
 % parpool('local',1);
     tic
 
