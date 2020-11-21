@@ -83,14 +83,15 @@ spmd(orderKDV)
         end
         
     end
+if(labindex == 1)
     figure
-
-waterfall(x,tdata(1:4:end),udata(:,1:4:end)')
-colormap(1e-6*[1 1 1]); view(-20,25)
-xlabel x, ylabel t, axis([-10 10 0 tmax 0 10]), grid off
-zlabel('u')
-set(gca,'ztick',[0 10]), pbaspect([1 1 .13])
-print -djpeg two_soliton
+    waterfall(x,tdata(1:4:end),udata(:,1:4:end)')
+    colormap(1e-6*[1 1 1]); view(-20,25)
+    xlabel x, ylabel t, axis([-10 10 0 tmax 0 10]), grid off
+    zlabel('u')
+    set(gca,'ztick',[0 10]), pbaspect([1 1 .13])
+    print -djpeg two_soliton
+end
 
 end
 
