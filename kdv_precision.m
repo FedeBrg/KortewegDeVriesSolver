@@ -19,7 +19,7 @@ u = 1/2*c_1*(sech(sqrt(c_1)*(mod(x+3,20)-10)/2)).^2;
 
 sol = @(x,t) (1/2*c_1*(sech(sqrt(c_1)*(mod(x+3-c_1*(t), 20)-10)/2)).^2);
 
-
+Error =[];
 name = 'two_soliton.gif';
 eval(['delete ',name])
 
@@ -66,11 +66,13 @@ for n = 1:nmax
         end
         udata = [udata u.']; tdata = [tdata t];
         
+        Error = [Error abs(u-u2)'];
+        
         if mod(n,4*nplt) == 0
            
 %             plot(x,u,'LineWidth',2)
             plot(x,u,x,u2,'LineWidth',1)
-            legend('Solucion kvd', 'Solucion Analitica', 'Location', 'southoutside');
+            legend('Solucion kdv', 'Solucion Analitica', 'Location', 'southoutside');
             axis([-10 10 0 10])
             xlabel('x')
             ylabel('u')
@@ -94,4 +96,11 @@ print -djpeg two_soliton
 
 % end
 toc
+
+% lo del error 
+figure
+    plot(max(Error)), hold on
+    plot(mean(Error)), 
+    legend('Error global', 'Media error', 'Location', 'southoutside'),
+    xlabel(['Dt = ', num2str(delta_t, '%1.5g')]);
 end

@@ -7,6 +7,8 @@ function kdv_yoshida()
 set(gca,'FontSize',18)
 set(gca,'LineWidth',2)
 
+Error = [];
+
 N = 256;
 x = linspace(-10,10,N);
 delta_x = x(2) - x(1);
@@ -36,7 +38,7 @@ t=0;
 % gif_add_frame(gcf,name,2);
 % drawnow
 
-tmax = 1; nplt = floor((tmax/100)/delta_t); nmax = round(tmax/delta_t);
+tmax = 0.5; nplt = floor((tmax/100)/delta_t); nmax = round(tmax/delta_t);
 udata = u.'; tdata = 0;
 
 U=fft(u);
@@ -61,6 +63,8 @@ for n = 1:nmax
             u2(i) = sol(x(i),t);
         end
         udata = [udata u.']; tdata = [tdata t];
+        
+        Error = [Error abs(u-u2)'];
         
         if mod(n,4*nplt) == 0
            
@@ -90,4 +94,11 @@ print -djpeg two_soliton
 
 % end
 toc
+
+% lo del error 
+figure
+    plot(max(Error)), hold on
+    plot(mean(Error)), 
+    legend('Error global', 'Media error', 'Location', 'southoutside'),
+    xlabel(['Dt = ', num2str(delta_t, '%1.5g')]);
 end

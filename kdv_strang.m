@@ -86,4 +86,11 @@ print -djpeg two_soliton
 
 % end
 toc
+
+% lo del error 
+figure
+    plot(max(Error)), hold on
+    plot(mean(Error)), 
+    legend('Error global', 'Media error', 'Location', 'southoutside'),
+    xlabel(['Dt = ', num2str(delta_t, '%1.5g')]);
 end
